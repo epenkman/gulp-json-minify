@@ -28,7 +28,6 @@
   ],
   "dependencies": {
     "gulp-util": "^3.0.7",
-    "node-json-minify": "^1.0.0",
     "through2": "^2.0.1"
   },
   "devDependencies": {

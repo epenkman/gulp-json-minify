@@ -4,8 +4,11 @@ module.exports = (function() {
 
     var PLUGIN_NAME = 'gulp-json-minify',
         gutil = require('gulp-util'),
-        through2 = require('through2'),
-        jsonMinify = require('node-json-minify');
+        through2 = require('through2');
+
+    function simpleMinify(jsonString) {
+        return JSON.stringify(JSON.parse(jsonString));
+    }
 
     function createStream(contentStream, streamReadyCallback) {
 
@@ -23,7 +26,7 @@ module.exports = (function() {
 
         contentStream.once('end', function() {
             contentStream.removeListener('readable', read);
-            newStream.write(jsonMinify(chunks.toString()));
+            newStream.write(simpleMinify(chunks.toString()));
             streamReadyCallback();
         });
 
@@ -35,13 +38,14 @@ module.exports = (function() {
     }
 
     return function() {
+
         return through2.obj(function(file, enc, cb) {
 
             if (file.isNull()) {
                 return cb(null, file);
             }
             if (file.isBuffer()) {
-                file.contents = new Buffer(jsonMinify(file.contents.toString()));
+                file.contents = new Buffer(simpleMinify(file.contents.toString()));
                 cb(null, file);
             }
             if (file.isStream()) {
